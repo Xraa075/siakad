@@ -5,7 +5,6 @@
             <form action="{{ route('admin.matakuliah.update', $matakuliah->id) }}" method="POST">
                 @csrf
                 @method('PUT')
-                {{-- $matakuliah, $dosens, dan $jurusans dikirim dari MatakuliahController@edit --}}
                 @include('admin.matakuliah.partials.form', [
                     'submitButtonText' => 'Update Mata Kuliah',
                     'matakuliah' => $matakuliah,

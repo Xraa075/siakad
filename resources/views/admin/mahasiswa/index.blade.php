@@ -23,9 +23,10 @@
                     <th>NRP</th>
                     <th>Nama Mahasiswa</th>
                     <th>Email Login</th>
-                    <th>Email Kontak</th> {{-- <-- Kolom baru --}}
+                    <th>Email Kontak</th>
                     <th>Kelas</th>
                     <th>Semester</th>
+                    <th>Jurusan</th>
                     <th style="width: 220px;">Aksi</th>
                 </tr>
             </thead>
@@ -35,9 +36,10 @@
                         <td>{{ $mhs->nrp }}</td>
                         <td>{{ $mhs->nama }}</td>
                         <td>{{ $mhs->user->email ?? '-' }}</td>
-                        <td>{{ $mhs->email_kontak ?? '-' }}</td> {{-- <-- Data baru --}}
+                        <td>{{ $mhs->email_kontak ?? '-' }}</td>
                         <td>{{ $mhs->kelas->nama_kelas ?? '-' }} ({{ $mhs->kelas->jurusan->nama_jurusan ?? '-' }})</td>
                         <td>{{ $mhs->semester }}</td>
+                        <td>{{ $mhs->kelas->jurusan->nama_jurusan }}</td>
                         <td>
                             <a href="{{ route('admin.mahasiswa.show', $mhs->nrp) }}"
                                 class="btn btn-info btn-sm">Detail</a>

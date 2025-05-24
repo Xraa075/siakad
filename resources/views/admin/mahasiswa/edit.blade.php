@@ -9,10 +9,9 @@
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-            <form action="{{ route('admin.mahasiswa.update', $mahasiswa->nrp) }}" method="POST"> {{-- Menggunakan NRP sebagai route key --}}
+            <form action="{{ route('admin.mahasiswa.update', $mahasiswa->nrp) }}" method="POST">
                 @csrf
                 @method('PUT')
-                {{-- $mahasiswa dan $kelasList dikirim dari MahasiswaController@edit --}}
                 @include('admin.mahasiswa.partials.form', [
                     'submitButtonText' => 'Update Mahasiswa',
                     'mahasiswa' => $mahasiswa,

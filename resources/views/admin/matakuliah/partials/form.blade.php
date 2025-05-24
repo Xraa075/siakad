@@ -1,10 +1,8 @@
-{{-- File: resources/views/admin/matakuliah/partials/form.blade.php --}}
-
 <div class="mb-3">
     <label for="nama_matakuliah" class="form-label">Nama Mata Kuliah</label>
     <input type="text" name="nama_matakuliah" id="nama_matakuliah"
-           class="form-control @error('nama_matakuliah') is-invalid @enderror"
-           value="{{ old('nama_matakuliah', $matakuliah->nama_matakuliah ?? '') }}" required>
+        class="form-control @error('nama_matakuliah') is-invalid @enderror"
+        value="{{ old('nama_matakuliah', $matakuliah->nama_matakuliah ?? '') }}" required>
     @error('nama_matakuliah')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
@@ -16,7 +14,7 @@
         <option value="">-- Pilih Dosen --</option>
         @foreach ($dosens as $dosen)
             <option value="{{ $dosen->nip }}"
-                    {{ old('dosen_nip', isset($matakuliah) ? $matakuliah->dosen_nip : '') == $dosen->nip ? 'selected' : '' }}>
+                {{ old('dosen_nip', isset($matakuliah) ? $matakuliah->dosen_nip : '') == $dosen->nip ? 'selected' : '' }}>
                 {{ $dosen->nama }} ({{ $dosen->nip }})
             </option>
         @endforeach
@@ -32,7 +30,7 @@
         <option value="">-- Pilih Jurusan --</option>
         @foreach ($jurusans as $jurusan)
             <option value="{{ $jurusan->id }}"
-                    {{ old('jurusan_id', isset($matakuliah) ? $matakuliah->jurusan_id : '') == $jurusan->id ? 'selected' : '' }}>
+                {{ old('jurusan_id', isset($matakuliah) ? $matakuliah->jurusan_id : '') == $jurusan->id ? 'selected' : '' }}>
                 {{ $jurusan->nama_jurusan }}
             </option>
         @endforeach
@@ -46,9 +44,8 @@
     <div class="col-md-6">
         <div class="mb-3">
             <label for="sks" class="form-label">SKS</label>
-            <input type="number" name="sks" id="sks"
-                   class="form-control @error('sks') is-invalid @enderror"
-                   value="{{ old('sks', $matakuliah->sks ?? '') }}" required min="1" max="6">
+            <input type="number" name="sks" id="sks" class="form-control @error('sks') is-invalid @enderror"
+                value="{{ old('sks', $matakuliah->sks ?? '') }}" required min="1" max="6">
             @error('sks')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -58,8 +55,8 @@
         <div class="mb-3">
             <label for="semester" class="form-label">Semester</label>
             <input type="number" name="semester" id="semester"
-                   class="form-control @error('semester') is-invalid @enderror"
-                   value="{{ old('semester', $matakuliah->semester ?? '') }}" required min="1" max="8">
+                class="form-control @error('semester') is-invalid @enderror"
+                value="{{ old('semester', $matakuliah->semester ?? '') }}" required min="1" max="8">
             @error('semester')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -68,5 +65,6 @@
 </div>
 
 
-<button type="submit" class="btn btn-primary">{{ $submitButtonText ?? (isset($matakuliah) ? 'Update Mata Kuliah' : 'Simpan Mata Kuliah') }}</button>
+<button type="submit"
+    class="btn btn-primary">{{ $submitButtonText ?? (isset($matakuliah) ? 'Update Mata Kuliah' : 'Simpan Mata Kuliah') }}</button>
 <a href="{{ route('admin.matakuliah.index') }}" class="btn btn-secondary">Kembali</a>

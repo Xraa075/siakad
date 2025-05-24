@@ -1,7 +1,6 @@
 <div class="container mt-4">
     <h3 class="mb-4">Manajemen Mata Kuliah</h3>
 
-    {{-- Notifikasi sukses --}}
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -16,7 +15,6 @@
     @endif
 
 
-    {{-- Tombol Tambah --}}
     <a href="{{ route('admin.matakuliah.create') }}" class="btn btn-success mb-3">Tambah Mata Kuliah</a>
 
     <div class="table-responsive">
@@ -35,7 +33,6 @@
                 @forelse ($matakuliahs as $mk)
                     <tr>
                         <td>{{ $mk->nama_matakuliah }}</td>
-                        {{-- Gunakan nama relasi yang benar di model Matakuliah Anda --}}
                         <td>{{ $mk->dosenPJMK->nama ?? '-' }}</td>
                         <td>{{ $mk->jurusan->nama_jurusan ?? '-' }}</td>
                         <td>{{ $mk->sks }}</td>

@@ -39,6 +39,8 @@
                     <tr>
                         <td>{{ $jur->nama_jurusan }}</td>
                         <td>
+                            <a href="{{ route('admin.kelas.index', ['jurusan_id' => $jur->id]) }}"
+                                class="btn btn-success btn-sm">Lihat Kelas</a>
                             <a href="{{ route('admin.jurusan.edit', $jur->id) }}"
                                 class="btn btn-warning btn-sm">Edit</a>
                             <form action="{{ route('admin.jurusan.destroy', $jur->id) }}" method="POST"

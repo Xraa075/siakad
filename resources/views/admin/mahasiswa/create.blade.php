@@ -7,7 +7,6 @@
             @endif
             <form action="{{ route('admin.mahasiswa.store') }}" method="POST">
                 @csrf
-                {{-- $kelasList dikirim dari MahasiswaController@create --}}
                 @include('admin.mahasiswa.partials.form', [
                     'submitButtonText' => 'Simpan Mahasiswa',
                     'kelasList' => $kelasList,

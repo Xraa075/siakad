@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DepartemenController;
 use App\Http\Controllers\Admin\JurusanController;
 use App\Http\Controllers\Admin\MatakuliahController;
 use App\Http\Controllers\Admin\MahasiswaController;
+use App\Http\Controllers\Admin\KelasController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Middleware Authenticate akan memastikan user sudah login.
@@ -23,9 +24,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('departemen', DepartemenController::class);
         Route::resource('jurusan', JurusanController::class);
         Route::resource('matakuliah', MatakuliahController::class);
-        Route::resource('mahasiswa', MahasiswaController::class); 
+        Route::resource('mahasiswa', MahasiswaController::class);
+        Route::resource('kelas', KelasController::class);
         // Tambahkan rute admin lainnya di sini
-        // Contoh: Route::get('users', [UserController::class, 'index'])->name('users.index');
     });
 });
 
