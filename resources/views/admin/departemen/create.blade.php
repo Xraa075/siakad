@@ -1,3 +1,5 @@
+@extends('layouts.admin')
+@section('content')
     <div class="container mt-4">
         <h3 class="mb-4">Tambah Departemen Baru</h3>
         <div class="card">
@@ -9,3 +11,4 @@
             </div>
         </div>
     </div>
+@endsection

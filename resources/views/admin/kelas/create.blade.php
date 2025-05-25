@@ -1,4 +1,5 @@
-
+@extends('layouts.admin')
+@section('content')
     <div class="container mt-4">
         <h3 class="mb-4">
             Tambah Kelas Baru untuk Jurusan: <span class="fw-normal">{{ $jurusanContext->nama_jurusan }}</span>
@@ -10,10 +11,10 @@
                         'submitButtonText' => 'Simpan Kelas',
                         'jurusanContext' => $jurusanContext,
                         'dosens' => $dosens,
-                        'jadwalKuliahs' => $jadwalKuliahs
+                        'jadwalKuliahs' => $jadwalKuliahs,
                     ])
                 </form>
             </div>
         </div>
     </div>
-
+@endsection

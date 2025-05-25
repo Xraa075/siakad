@@ -25,7 +25,7 @@
 <div class="row">
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="email_kontak" class="form-label">Email Kontak (Pribadi)</label>
+            <label for="email_kontak" class="form-label">Email Pribadi</label>
             <input type="email" name="email_kontak" id="email_kontak"
                 class="form-control @error('email_kontak') is-invalid @enderror"
                 value="{{ old('email_kontak', $mahasiswa->email_kontak ?? '') }}">

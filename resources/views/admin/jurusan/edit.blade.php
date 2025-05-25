@@ -1,3 +1,5 @@
+@extends('layouts.admin')
+@section('content')
 <div class="container mt-4">
     <h3 class="mb-3">
         Edit Jurusan: <span class="fw-normal">{{ $jurusan->nama_jurusan }}</span>
@@ -16,3 +18,4 @@
         </div>
     </div>
 </div>
+@endsection
