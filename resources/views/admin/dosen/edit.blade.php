@@ -4,7 +4,6 @@
         <h3 class="mb-3">Edit Data Dosen: <span class="fw-normal">{{ $dosen->nama }} ({{ $dosen->nip }})</span></h3>
         <a href="{{ route('admin.dosen.index') }}" class="btn btn-sm btn-outline-secondary mb-3">Kembali ke Daftar
             Dosen</a>
-
         <div class="card">
             <div class="card-body">
                 @if (session('error'))

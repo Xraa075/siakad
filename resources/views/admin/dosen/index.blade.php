@@ -42,7 +42,7 @@
                             <td>{{ $d->no_telp ?? '-' }}</td>
                             <td>{{ $d->isDosenWali ? 'Ya' : 'Tidak' }}</td>
                             <td>
-                                <div class="d-flex gap-1"> {{-- Menggunakan gap-1 untuk sedikit spasi --}}
+                                <div class="d-flex gap-1">
                                     <a href="{{ route('admin.dosen.show', $d->nip) }}"
                                         class="btn btn-sm btn-info">Detail</a>
                                     <a href="{{ route('admin.dosen.edit', $d->nip) }}"

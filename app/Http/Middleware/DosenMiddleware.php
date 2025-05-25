@@ -21,7 +21,6 @@ class DosenMiddleware
             } elseif ($role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman Dosen.');
             }
-            // Jika peran lain atau tidak terduga, bisa ke logout atau halaman umum
         }
         return redirect('/login')->with('error', 'Akses ditolak. Area khusus Dosen.');
     }

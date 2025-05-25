@@ -21,7 +21,6 @@ class MahasiswaMiddleware
             } elseif ($role === 'dosen') {
                 return redirect()->route('dosen.dashboard')->with('error', 'Anda tidak memiliki akses ke halaman Mahasiswa.');
             }
-            // Jika peran lain atau tidak terduga, bisa ke logout atau halaman umum
         }
         return redirect('/login')->with('error', 'Akses ditolak. Area khusus Mahasiswa.');
     }

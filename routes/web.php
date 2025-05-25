@@ -21,8 +21,6 @@ use App\Http\Controllers\Admin\JadwalMatakuliahController;
 use App\Http\Controllers\Admin\NilaiMahasiswaController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
-    // Middleware Authenticate akan memastikan user sudah login.
-    // AdminMiddleware akan memastikan user yang login memiliki peran 'admin'.
     Route::middleware([Authenticate::class, AdminMiddleware::class])->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::resource('departemen', DepartemenController::class);
@@ -34,26 +32,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('jadwalkuliah', JadwalKuliahController::class);
         Route::resource('jadwalmatakuliah', JadwalMatakuliahController::class);
         Route::resource('nilaimahasiswa', NilaiMahasiswaController::class);
-        // Tambahkan rute admin lainnya di sini
     });
 });
 
 Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::middleware([Authenticate::class, MahasiswaMiddleware::class])->group(function () {
         Route::get('dashboard', [MahasiswaDashboardController::class, 'index'])->name('dashboard');
-        // Tambahkan rute mahasiswa lainnya di sini
     });
 });
 
 Route::prefix('dosen')->name('dosen.')->group(function () {
     Route::middleware([Authenticate::class, DosenMiddleware::class])->group(function () {
         Route::get('dashboard', [DosenDashboardController::class, 'index'])->name('dashboard');
-        // Tambahkan rute dosen lainnya di sini
     });
 });
 
-// Pastikan rute login dan logout dari Breeze berfungsi
-// Contoh (mungkin sudah ada atau dikonfigurasi oleh Breeze):
 // Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 // Route::post('login', [AuthenticatedSessionController::class, 'store']);
 // Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');

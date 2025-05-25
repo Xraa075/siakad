@@ -1,18 +1,12 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dosen Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    Selamat datang di Dashboard Dosen, {{ Auth::user()->name }}!
-                    <p>Peran Anda: {{ Auth::user()->role }}</p>
+@extends('layouts.dosen')
+@section('content')
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    Selamat datang, {{ Auth::user()->name }}! 👋
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

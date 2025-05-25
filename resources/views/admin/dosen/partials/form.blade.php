@@ -1,5 +1,3 @@
-{{-- File: resources/views/admin/dosen/partials/form.blade.php --}}
-
 <div class="row">
     <div class="col-md-6">
         <div class="mb-3">
