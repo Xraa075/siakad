@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin; // Namespace diubah ke Admin
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kelas;
@@ -10,12 +10,8 @@ use App\Models\JadwalKuliah;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class KelasController extends Controller // Nama class tetap, tapi namespace berubah
+class KelasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     * Akan menampilkan kelas berdasarkan jurusan_id dari query parameter.
-     */
     public function index(Request $request)
     {
         $jurusanId = $request->query('jurusan_id');
@@ -51,9 +47,6 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
         return view('admin.kelas.create', compact('jurusanContext', 'dosens', 'jadwalKuliahs'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -73,19 +66,12 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
             ->with('success', 'Kelas berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     * (Opsional untuk alur admin, tapi bisa berguna)
-     */
     public function show(Kelas $kela)
     {
         $kela->load(['jurusan.departemen', 'dosenWali', 'jadwalKuliah', 'mahasiswas']);
         return view('admin.kelas.show', compact('kela'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Kelas $kela)
     {
         $kela->load('jurusan.departemen');
@@ -96,14 +82,11 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
         return view('admin.kelas.edit', compact('kela', 'jurusanContext', 'dosens', 'jadwalKuliahs'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Kelas $kela)
     {
         $request->validate([
             'nama_kelas' => 'required|string|max:100',
-            'jurusan_id' => 'required|exists:jurusans,id', // Biasanya tidak diubah, tapi validasi tetap ada
+            'jurusan_id' => 'required|exists:jurusans,id',
             'dosen_nip' => 'required|exists:dosens,nip',
             'semester' => 'required|integer|min:1',
             'jadwal_kuliah_id' => 'required|exists:jadwal_kuliahs,id',
@@ -115,18 +98,14 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
             ->with('success', 'Kelas berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Kelas $kela)
     {
-        // Tambahkan pengecekan jika ada mahasiswa di kelas tersebut sebelum menghapus
         if ($kela->mahasiswas()->exists()) {
             return redirect()->route('admin.kelas.index', ['jurusan_id' => $kela->jurusan_id])
                 ->with('error', 'Kelas tidak dapat dihapus karena masih memiliki mahasiswa terdaftar.');
         }
 
-        $jurusanId = $kela->jurusan_id; // Simpan untuk redirect
+        $jurusanId = $kela->jurusan_id;
         $kela->delete();
 
         return redirect()->route('admin.kelas.index', ['jurusan_id' => $jurusanId])

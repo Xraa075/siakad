@@ -21,7 +21,6 @@ class Departemen extends Model
     protected $table = 'departemens';
 
 
-    // Relasi ke Jurusan
     public function jurusans()
     {
         return $this->hasMany(Jurusan::class, 'departemen_id', 'id');

@@ -6,13 +6,8 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create(); // Contoh jika menggunakan factory
-
         $this->call([
             UserSeeder::class,       // Buat user dulu (admin, dosen, mahasiswa)
             DepartemenSeeder::class,

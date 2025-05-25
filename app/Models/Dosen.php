@@ -50,7 +50,6 @@ class Dosen extends Model
         return $this->hasMany(Matakuliah::class, 'dosen_nip', 'nip');
     }
 
-    // Nilai yang diinput oleh dosen ini
     public function nilaiMahasiswas()
     {
         return $this->hasMany(NilaiMahasiswa::class, 'dosen_nip', 'nip');

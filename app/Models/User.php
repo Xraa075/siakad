@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable // implements MustVerifyEmail // Aktifkan jika perlu verifikasi email
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -20,7 +20,7 @@ class User extends Authenticatable // implements MustVerifyEmail // Aktifkan jik
         'name',
         'email',
         'password',
-        'role', // Tambahkan 'role'
+        'role',
     ];
 
     /**
@@ -46,27 +46,18 @@ class User extends Authenticatable // implements MustVerifyEmail // Aktifkan jik
         ];
     }
 
-    // Relasi ke profil Admin
     public function admin()
     {
         return $this->hasOne(Admin::class, 'user_id', 'id');
     }
 
-    // Relasi ke profil Mahasiswa
     public function mahasiswa()
     {
         return $this->hasOne(Mahasiswa::class, 'user_id', 'id');
     }
 
-    // Relasi ke profil Dosen
     public function dosen()
     {
         return $this->hasOne(Dosen::class, 'user_id', 'id');
     }
-
-    // Jika Anda membuat model Session
-    // public function sessions()
-    // {
-    //     return $this->hasMany(Session::class);
-    // }
 }

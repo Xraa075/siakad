@@ -108,7 +108,7 @@ class DosenController extends Controller
         $request->validate([
             'nip' => 'required|string|max:20|unique:dosens,nip,' . $dosen->nip . ',nip',
             'nama' => 'required|string|max:100',
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()], // Password opsional
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'jurusan_id' => 'required|exists:jurusans,id',
             'email_kontak' => 'nullable|email|max:255|unique:dosens,email_kontak,' . $dosen->nip . ',nip',
             'no_telp' => 'nullable|string|max:20',
@@ -119,7 +119,6 @@ class DosenController extends Controller
         try {
             $userData = [
                 'name' => $request->nama,
-                // Email login tidak diubah di sini, atau perlu logika khusus jika boleh diubah
             ];
             if ($request->filled('password')) {
                 $userData['password'] = Hash::make($request->password);
@@ -127,7 +126,7 @@ class DosenController extends Controller
             $user->update($userData);
 
             $dosen->update([
-                'nip' => $request->nip, // Biasanya NIP tidak diubah, tapi bisa jika diperlukan
+                'nip' => $request->nip,
                 'nama' => $request->nama,
                 'jurusan_id' => $request->jurusan_id,
                 'email_kontak' => $request->email_kontak,
@@ -147,22 +146,20 @@ class DosenController extends Controller
 
     public function destroy(Dosen $dosen)
     {
-        // Pengecekan relasi sebelum menghapus
         if ($dosen->kelasWali()->exists()) {
             return redirect()->route('admin.dosen.index')->with('error', 'Dosen tidak dapat dihapus karena masih menjadi dosen wali untuk beberapa kelas.');
         }
         if ($dosen->matakuliahPJMK()->exists()) {
             return redirect()->route('admin.dosen.index')->with('error', 'Dosen tidak dapat dihapus karena masih menjadi PJMK untuk beberapa mata kuliah.');
         }
-        // Tambahkan pengecekan lain jika dosen terkait dengan jadwal mengajar atau nilai
 
         DB::beginTransaction();
         try {
             $user = $dosen->user;
-            $dosen->delete(); // Hapus record dosen
+            $dosen->delete();
 
             if ($user) {
-                $user->delete(); // Hapus record user terkait
+                $user->delete();
             }
 
             DB::commit();

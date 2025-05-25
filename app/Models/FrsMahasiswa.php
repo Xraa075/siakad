@@ -10,11 +10,11 @@ class FrsMahasiswa extends Model
     use HasFactory;
 
     protected $fillable = [
-        'mahasiswa_nrp', // [cite: 7]
-        'matakuliah_id', // [cite: 7]
-        'semester', // [cite: 7]
-        'status', // [cite: 7]
-        'tanggal_pengajuan', // [cite: 7]
+        'mahasiswa_nrp',
+        'matakuliah_id',
+        'semester',
+        'status',
+        'tanggal_pengajuan',
     ];
 
     /**
@@ -25,13 +25,11 @@ class FrsMahasiswa extends Model
     protected $table = 'frs_mahasiswas';
 
 
-    // Relasi ke Mahasiswa
     public function mahasiswa()
     {
         return $this->belongsTo(Mahasiswa::class, 'mahasiswa_nrp', 'nrp');
     }
 
-    // Relasi ke Matakuliah
     public function matakuliah()
     {
         return $this->belongsTo(Matakuliah::class, 'matakuliah_id', 'id');

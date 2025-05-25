@@ -16,9 +16,6 @@ class DepartemenController extends Controller
 
     public function create()
     {
-        // View ini mungkin akan sederhana, hanya menampilkan form partial atau
-        // bisa juga digabungkan logikanya di index jika menggunakan modal.
-        // Untuk saat ini, kita buat halaman create terpisah yang simpel.
         return view('admin.departemen.create');
     }
 
@@ -28,7 +25,7 @@ class DepartemenController extends Controller
             'nama_departemen' => 'required|string|max:100|unique:departemens,nama_departemen',
         ]);
 
-        Departemen::create($request->only('nama_departemen')); // Hanya ambil nama_departemen
+        Departemen::create($request->only('nama_departemen'));
 
         return redirect()->route('admin.departemen.index')
             ->with('success', 'Departemen berhasil ditambahkan.');
@@ -41,17 +38,14 @@ class DepartemenController extends Controller
         return view('admin.departemen.edit', compact('departemen'));
     }
 
-    // app/Http/Controllers/Admin/DepartemenController.php
-    public function update(Request $request, $id) // Menerima ID, bukan model binding langsung
+    public function update(Request $request, $id)
     {
-        $departemen = Departemen::findOrFail($id); // Cari departemen berdasarkan ID
+        $departemen = Departemen::findOrFail($id);
 
         $request->validate([
-            // Validasi: pastikan nama_departemen unik KECUALI untuk record saat ini
             'nama_departemen' => 'required|string|max:100|unique:departemens,nama_departemen,' . $departemen->id,
         ]);
 
-        // Hanya update field yang relevan
         $isUpdated = $departemen->update([
             'nama_departemen' => $request->nama_departemen,
         ]);
@@ -60,7 +54,6 @@ class DepartemenController extends Controller
             return redirect()->route('admin.departemen.index')
                 ->with('success', 'Departemen berhasil diperbarui.');
         } else {
-            // Ini jarang terjadi jika tidak ada error, tapi baik untuk jaga-jaga
             return back()->with('error', 'Gagal memperbarui departemen. Tidak ada data yang berubah atau terjadi kesalahan.');
         }
     }
@@ -73,7 +66,4 @@ class DepartemenController extends Controller
         return redirect()->route('admin.departemen.index')
             ->with('success', 'Departemen berhasil dihapus.');
     }
-
-    // Method show() bisa Anda implementasikan jika perlu halaman detail departemen,
-    // tapi berdasarkan permintaan, kita akan langsung ke list jurusan.
 }
