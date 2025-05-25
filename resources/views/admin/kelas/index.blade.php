@@ -1,16 +1,11 @@
 @extends('layouts.admin')
 @section('content')
     <div class="container mt-4">
-        @if ($jurusanContext)
-            <h3 class="mb-2">
-                {{ $pageTitle ?? 'Manajemen Kelas' }}
-                (<span class="fw-normal">{{ $jurusanContext->departemen->nama_departemen }}</span>)
-            </h3>
-            <a href="{{ route('admin.jurusan.index', ['departemen_id' => $jurusanContext->departemen_id]) }}"
-                class="btn btn-sm btn-outline-secondary mb-3">Kembali ke Daftar Jurusan</a>
-        @else
-            <h3 class="mb-4">{{ $pageTitle ?? 'Manajemen Kelas (Pilih Jurusan Terlebih Dahulu)' }}</h3>
-        @endif
+        <h3 class="mb-3">
+            Daftar Kelas untuk Jurusan: <span
+                class="fw-normal">{{ $jurusanContext->nama_jurusan ?? 'Tidak Ditemukan' }}</span></h3>
+        <a href="{{ route('admin.jurusan.index', ['departemen_id' => $jurusanContext->departemen_id]) }}"
+            class="btn btn-sm btn-outline-secondary mb-3">Kembali ke Daftar Jurusan</a>
 
         @if (session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

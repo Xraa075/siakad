@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\MatakuliahController;
 use App\Http\Controllers\Admin\MahasiswaController;
 use App\Http\Controllers\Admin\KelasController;
 use App\Http\Controllers\Admin\DosenController;
+use App\Http\Controllers\Admin\JadwalKuliahController;
+use App\Http\Controllers\Admin\JadwalMatakuliahController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     // Middleware Authenticate akan memastikan user sudah login.
@@ -28,6 +30,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('mahasiswa', MahasiswaController::class);
         Route::resource('kelas', KelasController::class);
         Route::resource('dosen', DosenController::class);
+        Route::resource('jadwalkuliah', JadwalKuliahController::class);
+        Route::resource('jadwalmatakuliah', JadwalMatakuliahController::class);
         // Tambahkan rute admin lainnya di sini
     });
 });

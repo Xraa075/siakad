@@ -59,6 +59,8 @@
                     <li><a href="/admin/dosen" class="{{ Request::is('admin/dosen*') ? 'active' : '' }}">Dosen</a></li>
                     <li><a href="/admin/matakuliah" class="{{ Request::is('admin/matakuliah*') ? 'active' : '' }}">Mata
                             Kuliah</a></li>
+                    <li><a href="/admin/jadwalkuliah"
+                            class="{{ Request::is('admin/jadwalkuliah*') ? 'active' : '' }}">Jadwal Kuliah</a></li>
                     <li>
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
                             @csrf

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,27 +10,23 @@ class JadwalMatakuliah extends Model
 {
     use HasFactory;
 
+    // Jika nama tabel Anda 'jadwal_matakuliahs' atau 'jadwalmatakuliahs' (plural), tidak perlu $table.
+    // Jika nama tabelnya 'jadwal_matakuliah', maka:
+    // protected $table = 'jadwal_matakuliah';
+
     protected $fillable = [
-        'jadwal_kuliah_id', // [cite: 9]
-        'matakuliah_id', // [cite: 9]
-        'dosen_nip',          // Dosen Pengajar 1 [cite: 9]
-        'dosen_pengajar2_nip', // [cite: 9]
-        'hari', // [cite: 9]
-        'jam_mulai', // [cite: 9]
-        'jam_selesai', // [cite: 9]
-        'ruangan', // [cite: 9]
-        'semester', // [cite: 9]
+        'jadwal_kuliah_id',
+        'matakuliah_id',
+        'dosen_nip', // Dosen Pengajar 1
+        'dosen_pengajar2_nip', // Dosen Pengajar 2 (opsional)
+        'hari',
+        'jam_mulai',
+        'jam_selesai',
+        'ruangan',
+        'semester', // Semester pelaksanaan matakuliah ini dalam jadwal tersebut
     ];
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'jadwal_matakuliahs';
-
-
-    // Relasi ke Jadwal Kuliah (Header)
+    // Relasi ke JadwalKuliah (induk)
     public function jadwalKuliah()
     {
         return $this->belongsTo(JadwalKuliah::class, 'jadwal_kuliah_id', 'id');
@@ -47,7 +44,7 @@ class JadwalMatakuliah extends Model
         return $this->belongsTo(Dosen::class, 'dosen_nip', 'nip');
     }
 
-    // Relasi ke Dosen Pengajar 2
+    // Relasi ke Dosen Pengajar 2 (opsional)
     public function dosenPengajar2()
     {
         return $this->belongsTo(Dosen::class, 'dosen_pengajar2_nip', 'nip');

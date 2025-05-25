@@ -1,4 +1,5 @@
 <?php
+// app/Models/JadwalKuliah.php (atau Jadwalkuliah.php)
 
 namespace App\Models;
 
@@ -9,25 +10,20 @@ class JadwalKuliah extends Model
 {
     use HasFactory;
 
+    // Jika nama tabel Anda adalah 'jadwal_kuliahs' (plural dari JadwalKuliah),
+    // Anda tidak perlu mendefinisikan $table secara eksplisit.
+    // Jika nama tabelnya 'jadwal_kuliah', maka:
+    // protected $table = 'jadwal_kuliah';
+
     protected $fillable = [
-        'nama_jadwal', // [cite: 8]
+        'nama_jadwal',
     ];
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'jadwal_kuliahs'; // Nama tabel eksplisit
-
-
-    // Relasi ke Detail Jadwal Matakuliah
-    public function detailJadwalMatakuliah()
+    public function jadwalMatakuliahs()
     {
         return $this->hasMany(JadwalMatakuliah::class, 'jadwal_kuliah_id', 'id');
     }
 
-    // Relasi ke Kelas yang menggunakan jadwal ini
     public function kelas()
     {
         return $this->hasMany(Kelas::class, 'jadwal_kuliah_id', 'id');
