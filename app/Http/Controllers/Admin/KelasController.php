@@ -20,7 +20,6 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
     {
         $jurusanId = $request->query('jurusan_id');
         $jurusanContext = null;
-        // Eager load relasi yang dibutuhkan untuk tampilan index
         $kelasListQuery = Kelas::query()->with(['jurusan.departemen', 'dosenWali', 'jadwalKuliah']);
 
         if ($jurusanId) {
@@ -28,32 +27,26 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
             $kelasListQuery->where('jurusan_id', $jurusanId);
             $pageTitle = "Daftar Kelas untuk Jurusan: " . $jurusanContext->nama_jurusan;
         } else {
-            // Jika diakses tanpa jurusan_id, arahkan kembali ke daftar jurusan untuk memilih konteks
             return redirect()->route('admin.jurusan.index')
                 ->with('info', 'Silakan pilih jurusan terlebih dahulu untuk melihat daftar kelasnya.');
         }
 
-        $kelasList = $kelasListQuery->orderBy('nama_kelas')->paginate(10); // Menggunakan variabel $kelasList
+        $kelasList = $kelasListQuery->orderBy('nama_kelas')->paginate(10);
 
         return view('admin.kelas.index', compact('kelasList', 'jurusanContext', 'pageTitle'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * Membutuhkan jurusan_id dari query parameter untuk konteks.
-     */
     public function create(Request $request)
     {
         $jurusanId = $request->query('jurusan_id');
         if (!$jurusanId) {
-            return redirect()->route('admin.jurusan.index') // atau admin.departemen.index
+            return redirect()->route('admin.jurusan.index')
                 ->with('error', 'Harap pilih jurusan terlebih dahulu untuk menambah kelas.');
         }
 
         $jurusanContext = Jurusan::with('departemen')->findOrFail($jurusanId);
-        // Mengambil semua dosen (atau filter yang 'isDosenWali' jika ada flag tersebut di tabel dosen)
-        $dosens = Dosen::orderBy('nama')->get(); // Anda bisa filter where('isDosenWali', true) jika perlu
-        $jadwalKuliahs = JadwalKuliah::orderBy('nama_jadwal')->get(); // Mengganti nama variabel $jadwals
+        $dosens = Dosen::where('isDosenWali', true)->get();
+        $jadwalKuliahs = JadwalKuliah::orderBy('nama_jadwal')->get();
 
         return view('admin.kelas.create', compact('jurusanContext', 'dosens', 'jadwalKuliahs'));
     }
@@ -65,10 +58,10 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
     {
         $request->validate([
             'nama_kelas' => 'required|string|max:100',
-            'jurusan_id' => 'required|exists:jurusans,id', // Ini akan dari hidden input
-            'dosen_nip' => [ // dosen_nip adalah dosen wali
+            'jurusan_id' => 'required|exists:jurusans,id',
+            'dosen_nip' => [
                 'required',
-                Rule::exists('dosens', 'nip') // Validasi sederhana, atau bisa tambahkan ->where('isDosenWali', true) jika perlu
+                Rule::exists('dosens', 'nip')->where('isDosenWali', true)
             ],
             'semester' => 'required|integer|min:1',
             'jadwal_kuliah_id' => 'required|exists:jadwal_kuliahs,id',
@@ -76,7 +69,6 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
 
         Kelas::create($request->all());
 
-        // Redirect kembali ke index kelas dengan menyertakan jurusan_id agar tetap dalam konteks
         return redirect()->route('admin.kelas.index', ['jurusan_id' => $request->jurusan_id])
             ->with('success', 'Kelas berhasil ditambahkan.');
     }
@@ -85,10 +77,10 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
      * Display the specified resource.
      * (Opsional untuk alur admin, tapi bisa berguna)
      */
-    public function show(Kelas $kela) // Menggunakan $kela karena nama model adalah Kelas
+    public function show(Kelas $kela)
     {
         $kela->load(['jurusan.departemen', 'dosenWali', 'jadwalKuliah', 'mahasiswas']);
-        return view('admin.kelas.show', compact('kela')); // Buat view admin.kelas.show jika perlu
+        return view('admin.kelas.show', compact('kela'));
     }
 
     /**
@@ -96,9 +88,9 @@ class KelasController extends Controller // Nama class tetap, tapi namespace ber
      */
     public function edit(Kelas $kela)
     {
-        $kela->load('jurusan.departemen'); // Untuk konteks
+        $kela->load('jurusan.departemen');
         $jurusanContext = $kela->jurusan;
-        $dosens = Dosen::orderBy('nama')->get(); // Atau filter dosen wali
+        $dosens = Dosen::where('isDosenWali', true)->get();
         $jadwalKuliahs = JadwalKuliah::orderBy('nama_jadwal')->get();
 
         return view('admin.kelas.edit', compact('kela', 'jurusanContext', 'dosens', 'jadwalKuliahs'));

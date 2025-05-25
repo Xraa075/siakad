@@ -52,18 +52,9 @@ class MahasiswaController extends Controller
 
         DB::beginTransaction();
         try {
-            // 1. Generate Login Email dari Nama Lengkap
             $namaLengkap = $request->nama;
-
-            // Langkah 1: Hilangkan semua karakter KECUALI huruf, angka, dan spasi.
-            // Spasi akan dihilangkan di langkah berikutnya.
-            // Ini mempertahankan huruf besar dan kecil serta angka.
             $cleanedName = preg_replace("/[^A-Za-z0-9\s]/", '', $namaLengkap);
-
-            // Langkah 2: Hilangkan semua spasi
             $baseEmailName = str_replace(' ', '', $cleanedName);
-
-            // Langkah 3: Ubah semua menjadi huruf kecil
             $baseEmailName = Str::lower($baseEmailName);
 
             if (empty($baseEmailName)) {
