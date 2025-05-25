@@ -58,10 +58,13 @@
                     <li><a href="/admin/jadwalkuliah"
                             class="{{ Request::is('admin/jadwalkuliah*') ? 'active' : '' }}">Jadwal Kuliah</a></li>
                     <li>
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-link text-white ps-3">Logout</button>
-                        </form>
+                        <a href="/admin/nilaimahasiswa"
+                            class="{{ Request::is('admin/nilaimahasiswa*') ? 'active' : '' }}">Nilai Mahasiswa</a>
+                    </li>
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-link text-white ps-3">Logout</button>
+                    </form>
                     </li>
                 </ul>
             </nav>
