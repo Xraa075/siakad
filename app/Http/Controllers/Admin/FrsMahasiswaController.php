@@ -47,31 +47,20 @@ class FrsMahasiswaController extends Controller
 
     public function update(Request $request, FrsMahasiswa $frs_mahasiswa)
     {
-        $request->merge([
-            'available' => $request->has('available') ? 1 : 0,
-        ]);
-
-        $request->validate([
+        $validated = $request->validate([
             'mahasiswa_nrp' => 'required|exists:mahasiswas,nrp',
             'matakuliah_id' => 'required|exists:matakuliahs,id',
             'semester' => 'required|integer|min:1',
             'status' => 'required|in:acc,belum acc',
             'tanggal_pengajuan' => 'required|date',
-            'available' => 'nullable|boolean',
         ]);
 
-        $frs_mahasiswa->update([
-            'mahasiswa_nrp' => $request->mahasiswa_nrp,
-            'matakuliah_id' => $request->matakuliah_id,
-            'semester' => $request->semester,
-            'status' => $request->status,
-            'tanggal_pengajuan' => $request->tanggal_pengajuan,
-            'available' => $request->has('available'),
-        ]);
+        $validated['available'] = $request->has('available');
+
+        $frs_mahasiswa->update($validated);
 
         return redirect()->route('admin.frs-mahasiswa.index')->with('success', 'FRS berhasil diperbarui.');
     }
-
 
     public function destroy(FrsMahasiswa $frs_mahasiswa)
     {

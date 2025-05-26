@@ -47,7 +47,6 @@
     </div>
 </div>
 
-
 <div class="row">
     <div class="col-md-6">
         <div class="mb-3">
@@ -78,8 +77,8 @@
             <select name="kelas_id" id="kelas_id" class="form-select @error('kelas_id') is-invalid @enderror" required>
                 <option value="">-- Pilih Kelas --</option>
                 @foreach ($kelasList as $kelas)
-                    <option value="{{ $kelas->id }}"
-                        {{ old('kelas_id', isset($mahasiswa) ? $mahasiswa->kelas_id : '') == $kelas->id ? 'selected' : '' }}>
+                    <option value="{{ $kelas->id }}" data-semester="{{ $kelas->semester }}"
+                        {{ old('kelas_id', $mahasiswa->kelas_id ?? '') == $kelas->id ? 'selected' : '' }}>
                         {{ $kelas->nama_kelas }} ({{ $kelas->jurusan->nama_jurusan ?? 'N/A' }}) - Sem:
                         {{ $kelas->semester }}
                     </option>
@@ -90,15 +89,11 @@
             @enderror
         </div>
     </div>
+
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="semester" class="form-label">Semester Saat Ini <span class="text-danger">*</span></label>
-            <input type="number" name="semester" id="semester"
-                class="form-control @error('semester') is-invalid @enderror"
-                value="{{ old('semester', $mahasiswa->semester ?? '') }}" required min="1" max="14">
-            @error('semester')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+            <label class="form-label">Semester Kelas</label>
+            <input type="text" id="semester_kelas" class="form-control" readonly>
         </div>
     </div>
 </div>
@@ -106,3 +101,20 @@
 <button type="submit"
     class="btn btn-primary">{{ $submitButtonText ?? (isset($mahasiswa) ? 'Update Mahasiswa' : 'Simpan Mahasiswa') }}</button>
 <a href="{{ route('admin.mahasiswa.index') }}" class="btn btn-secondary">Kembali</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const kelasSelect = document.getElementById('kelas_id');
+        const semesterField = document.getElementById('semester_kelas');
+
+        if (kelasSelect && semesterField) {
+            const updateSemester = () => {
+                const selected = kelasSelect.options[kelasSelect.selectedIndex];
+                semesterField.value = selected.getAttribute('data-semester') || '-';
+            };
+
+            kelasSelect.addEventListener('change', updateSemester);
+            updateSemester();
+        }
+    });
+</script>

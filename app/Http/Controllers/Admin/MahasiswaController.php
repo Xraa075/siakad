@@ -35,13 +35,15 @@ class MahasiswaController extends Controller
             'nama' => 'required|string|max:100',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'kelas_id' => 'required|exists:kelas,id',
-            'semester' => 'required|integer|min:1|max:14',
             'no_telp' => 'nullable|string|max:20',
             'email_kontak' => 'nullable|email|max:255|unique:mahasiswas,email_kontak',
         ]);
 
         DB::beginTransaction();
         try {
+            $kelas = Kelas::findOrFail($request->kelas_id);
+            $semester = $kelas->semester;
+
             $namaLengkap = $request->nama;
             $cleanedName = preg_replace("/[^A-Za-z0-9\s]/", '', $namaLengkap);
             $baseEmailName = str_replace(' ', '', $cleanedName);
@@ -49,8 +51,9 @@ class MahasiswaController extends Controller
 
             if (empty($baseEmailName)) {
                 DB::rollBack();
-                return back()->withInput()->with('error', 'Nama tidak valid untuk menghasilkan email login (setelah dibersihkan menjadi kosong).');
+                return back()->withInput()->with('error', 'Nama tidak valid untuk menghasilkan email login.');
             }
+
             $loginEmail = $baseEmailName . '@student.com';
             $counter = 1;
             while (User::where('email', $loginEmail)->exists()) {
@@ -58,9 +61,10 @@ class MahasiswaController extends Controller
                 $counter++;
                 if ($counter > 100) {
                     DB::rollBack();
-                    return back()->withInput()->with('error', 'Tidak dapat menghasilkan email login unik setelah beberapa percobaan. Silakan periksa data atau hubungi administrator.');
+                    return back()->withInput()->with('error', 'Gagal membuat email login unik.');
                 }
             }
+
             $user = User::create([
                 'name' => $request->nama,
                 'email' => $loginEmail,
@@ -74,19 +78,20 @@ class MahasiswaController extends Controller
                 'user_id' => $user->id,
                 'nama' => $request->nama,
                 'kelas_id' => $request->kelas_id,
-                'semester' => $request->semester,
+                'semester' => $semester, // ← Diambil dari kelas
                 'no_telp' => $request->no_telp,
                 'email_kontak' => $request->email_kontak,
             ]);
 
             DB::commit();
             return redirect()->route('admin.mahasiswa.index')
-                ->with('success', "Mahasiswa berhasil ditambahkan. Email login otomatis dibuat: {$loginEmail}");
+                ->with('success', "Mahasiswa berhasil ditambahkan. Email login: {$loginEmail}");
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withInput()->with('error', 'Gagal menambahkan mahasiswa. Terjadi kesalahan sistem.');
+            return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
 
     public function show(Mahasiswa $mahasiswa)
     {
@@ -111,28 +116,26 @@ class MahasiswaController extends Controller
             'nama' => 'required|string|max:100',
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
             'kelas_id' => 'required|exists:kelas,id',
-            'semester' => 'required|integer|min:1|max:14',
             'no_telp' => 'nullable|string|max:20',
-            'email_kontak' => 'nullable|email|max:255|unique:mahasiswas,email_kontak,' . $mahasiswa->nrp . ',nrp', // Unik, abaikan record saat ini
+            'email_kontak' => 'nullable|email|max:255|unique:mahasiswas,email_kontak,' . $mahasiswa->nrp . ',nrp',
         ]);
 
         DB::beginTransaction();
         try {
-            $userData = [
-                'name' => $request->nama,
-            ];
+            $kelas = Kelas::findOrFail($request->kelas_id);
+            $semester = $kelas->semester;
 
+            $userData = ['name' => $request->nama];
             if ($request->filled('password')) {
                 $userData['password'] = Hash::make($request->password);
             }
             $user->update($userData);
 
-
             $mahasiswa->update([
                 'nrp' => $request->nrp,
                 'nama' => $request->nama,
                 'kelas_id' => $request->kelas_id,
-                'semester' => $request->semester,
+                'semester' => $semester,
                 'no_telp' => $request->no_telp,
                 'email_kontak' => $request->email_kontak,
             ]);
@@ -142,9 +145,10 @@ class MahasiswaController extends Controller
                 ->with('success', 'Data Mahasiswa berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withInput()->with('error', 'Gagal memperbarui data mahasiswa. Terjadi kesalahan: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
         }
     }
+
 
     public function destroy(Mahasiswa $mahasiswa)
     {
