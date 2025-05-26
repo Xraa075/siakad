@@ -2,36 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class FrsMahasiswa extends Model
 {
-    use HasFactory;
+    protected $table = 'frs_mahasiswas'; // pastikan ini sesuai dengan nama tabel di database
 
     protected $fillable = [
         'mahasiswa_nrp',
         'matakuliah_id',
         'semester',
         'status',
+        'status_ambil',
         'tanggal_pengajuan',
+        'available',
     ];
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'frs_mahasiswas';
-
-
+    // Relasi ke mahasiswa (NRP digunakan sebagai foreign key)
     public function mahasiswa()
     {
         return $this->belongsTo(Mahasiswa::class, 'mahasiswa_nrp', 'nrp');
     }
 
+    // Relasi ke mata kuliah
     public function matakuliah()
     {
-        return $this->belongsTo(Matakuliah::class, 'matakuliah_id', 'id');
+        return $this->belongsTo(MataKuliah::class);
     }
 }

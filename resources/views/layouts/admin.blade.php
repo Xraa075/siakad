@@ -61,6 +61,8 @@
                         <a href="/admin/nilaimahasiswa"
                             class="{{ Request::is('admin/nilaimahasiswa*') ? 'active' : '' }}">Nilai Mahasiswa</a>
                     </li>
+                    <li><a href="/admin/frs-mahasiswa"
+                            class="{{ Request::is('admin/frs-mahasiswa*') ? 'active' : '' }}">FRS Mahasiswa</a></li>
                     <form action="{{ route('logout') }}" method="POST" class="d-inline">
                         @csrf
                         <button type="submit" class="btn btn-link text-white ps-3">Logout</button>

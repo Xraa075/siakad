@@ -32,18 +32,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('jadwalkuliah', JadwalKuliahController::class);
         Route::resource('jadwalmatakuliah', JadwalMatakuliahController::class);
         Route::resource('nilaimahasiswa', NilaiMahasiswaController::class);
+        Route::resource('/frs-mahasiswa', \App\Http\Controllers\Admin\FrsMahasiswaController::class);
     });
 });
 
 Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::middleware([Authenticate::class, MahasiswaMiddleware::class])->group(function () {
         Route::get('dashboard', [MahasiswaDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/frs', [\App\Http\Controllers\Mahasiswa\FrsMahasiswaController::class, 'index'])->name('frs.index');
+        Route::post('/frs/ambil/{id}', [\App\Http\Controllers\Mahasiswa\FrsMahasiswaController::class, 'ambil'])->name('frs.ambil');
     });
 });
 
 Route::prefix('dosen')->name('dosen.')->group(function () {
     Route::middleware([Authenticate::class, DosenMiddleware::class])->group(function () {
         Route::get('dashboard', [DosenDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/frs', [\App\Http\Controllers\Dosen\FrsMahasiswaController::class, 'index'])->name('frs.index');
+        Route::post('/frs/{id}/acc', [\App\Http\Controllers\Dosen\FrsMahasiswaController::class, 'acc'])->name('frs.acc');
     });
 });
 
