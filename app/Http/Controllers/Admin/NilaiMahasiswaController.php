@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-
-
 use App\Http\Controllers\Controller;
 use App\Models\NilaiMahasiswa;
 use App\Models\Mahasiswa;
@@ -16,7 +14,6 @@ class NilaiMahasiswaController extends Controller
     private function hitungGrade($nilai_akhir)
     {
         if ($nilai_akhir === null) return null;
-
         return match (true) {
             $nilai_akhir >= 85 => 'A',
             $nilai_akhir >= 75 => 'B',
@@ -35,7 +32,6 @@ class NilaiMahasiswaController extends Controller
     public function index(Request $request)
     {
         $query = NilaiMahasiswa::with(['mahasiswa', 'matakuliah', 'dosen']);
-
         if ($request->filled('mahasiswa_nrp')) {
             $query->where('mahasiswa_nrp', $request->mahasiswa_nrp);
         }
@@ -89,7 +85,6 @@ class NilaiMahasiswaController extends Controller
             $request->only(['mahasiswa_nrp', 'matakuliah_id', 'dosen_nip', 'semester', 'nilai_uts', 'nilai_uas', 'nilai_tugas']),
             ['nilai_akhir' => $nilai_akhir, 'grade' => $grade]
         ));
-
         return redirect()->route('admin.nilaimahasiswa.index')->with('success', 'Nilai mahasiswa berhasil ditambahkan.');
     }
 

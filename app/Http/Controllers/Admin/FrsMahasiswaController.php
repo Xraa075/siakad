@@ -30,15 +30,10 @@ class FrsMahasiswaController extends Controller
             'matakuliah_id' => 'required|exists:matakuliahs,id',
             'semester' => 'required|integer|min:1',
             'tanggal_pengajuan' => 'required|date',
-            // status default, tidak divalidasi
-            // available adalah checkbox, nilainya optional
         ]);
-
-        $validated['status'] = 'belum acc'; // default
-        $validated['available'] = $request->has('available'); // checkbox
-
+        $validated['status'] = 'belum acc';
+        $validated['available'] = $request->has('available');
         FrsMahasiswa::create($validated);
-
         return redirect()->route('admin.frs-mahasiswa.index')->with('success', 'FRS berhasil ditambahkan.');
     }
 

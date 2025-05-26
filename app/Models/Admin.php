@@ -11,7 +11,7 @@ class Admin extends Model
 
     protected $fillable = [
         'user_id',
-        'username_admin', // [cite: 1]
+        'username_admin',
     ];
 
     /**

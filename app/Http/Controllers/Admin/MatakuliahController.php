@@ -63,9 +63,7 @@ class MatakuliahController extends Controller
             'sks' => 'required|integer|min:1|max:6',
             'semester' => 'required|integer|min:1|max:8',
         ]);
-
         $matakuliah->update($request->all());
-
         return redirect()->route('admin.matakuliah.index')
             ->with('success', 'Mata Kuliah berhasil diperbarui.');
     }
@@ -73,7 +71,6 @@ class MatakuliahController extends Controller
     public function destroy(Matakuliah $matakuliah)
     {
         $matakuliah->delete();
-
         return redirect()->route('admin.matakuliah.index')
             ->with('success', 'Mata Kuliah berhasil dihapus.');
     }

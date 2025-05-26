@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Str;
 
-
 class MahasiswaController extends Controller
 {
     public function index()
@@ -22,7 +21,6 @@ class MahasiswaController extends Controller
             ->paginate(10);
         return view('admin.mahasiswa.index', compact('mahasiswas'));
     }
-
 
     public function create()
     {
@@ -53,7 +51,6 @@ class MahasiswaController extends Controller
                 DB::rollBack();
                 return back()->withInput()->with('error', 'Nama tidak valid untuk menghasilkan email login (setelah dibersihkan menjadi kosong).');
             }
-
             $loginEmail = $baseEmailName . '@student.com';
             $counter = 1;
             while (User::where('email', $loginEmail)->exists()) {
@@ -64,7 +61,6 @@ class MahasiswaController extends Controller
                     return back()->withInput()->with('error', 'Tidak dapat menghasilkan email login unik setelah beberapa percobaan. Silakan periksa data atau hubungi administrator.');
                 }
             }
-
             $user = User::create([
                 'name' => $request->nama,
                 'email' => $loginEmail,
@@ -72,7 +68,6 @@ class MahasiswaController extends Controller
                 'role' => 'mahasiswa',
                 'email_verified_at' => now(),
             ]);
-
 
             Mahasiswa::create([
                 'nrp' => $request->nrp,

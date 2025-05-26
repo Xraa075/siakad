@@ -14,16 +14,13 @@ class JurusanController extends Controller
         $departemenId = $request->query('departemen_id');
         $departemen = null;
         $jurusansQuery = Jurusan::query();
-
         if ($departemenId) {
             $departemen = Departemen::findOrFail($departemenId);
             $jurusansQuery->where('departemen_id', $departemenId);
         } else {
             return redirect()->route('admin.departemen.index')->with('info', 'Silakan pilih departemen terlebih dahulu untuk melihat jurusan.');
         }
-
         $jurusans = $jurusansQuery->orderBy('nama_jurusan')->paginate(10);
-
         return view('admin.jurusan.index', compact('jurusans', 'departemen'));
     }
 
@@ -48,9 +45,7 @@ class JurusanController extends Controller
             'departemen_id.required' => 'Departemen harus dipilih.',
             'departemen_id.exists' => 'Departemen yang dipilih tidak valid.',
         ]);
-
         Jurusan::create($request->all());
-
         return redirect()->route('admin.jurusan.index', ['departemen_id' => $request->departemen_id])
             ->with('success', 'Jurusan berhasil ditambahkan.');
     }
@@ -68,9 +63,7 @@ class JurusanController extends Controller
             'nama_jurusan' => 'required|string|max:100',
             'departemen_id' => 'required|exists:departemens,id',
         ]);
-
         $jurusan->update($request->all());
-
         return redirect()->route('admin.jurusan.index', ['departemen_id' => $jurusan->departemen_id])
             ->with('success', 'Jurusan berhasil diperbarui.');
     }

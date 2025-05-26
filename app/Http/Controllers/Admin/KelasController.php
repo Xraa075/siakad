@@ -17,7 +17,6 @@ class KelasController extends Controller
         $jurusanId = $request->query('jurusan_id');
         $jurusanContext = null;
         $kelasListQuery = Kelas::query()->with(['jurusan.departemen', 'dosenWali', 'jadwalKuliah']);
-
         if ($jurusanId) {
             $jurusanContext = Jurusan::with('departemen')->findOrFail($jurusanId);
             $kelasListQuery->where('jurusan_id', $jurusanId);
@@ -26,9 +25,7 @@ class KelasController extends Controller
             return redirect()->route('admin.jurusan.index')
                 ->with('info', 'Silakan pilih jurusan terlebih dahulu untuk melihat daftar kelasnya.');
         }
-
         $kelasList = $kelasListQuery->orderBy('nama_kelas')->paginate(10);
-
         return view('admin.kelas.index', compact('kelasList', 'jurusanContext', 'pageTitle'));
     }
 
@@ -39,11 +36,9 @@ class KelasController extends Controller
             return redirect()->route('admin.jurusan.index')
                 ->with('error', 'Harap pilih jurusan terlebih dahulu untuk menambah kelas.');
         }
-
         $jurusanContext = Jurusan::with('departemen')->findOrFail($jurusanId);
         $dosens = Dosen::where('isDosenWali', true)->get();
         $jadwalKuliahs = JadwalKuliah::orderBy('nama_jadwal')->get();
-
         return view('admin.kelas.create', compact('jurusanContext', 'dosens', 'jadwalKuliahs'));
     }
 
@@ -59,9 +54,7 @@ class KelasController extends Controller
             'semester' => 'required|integer|min:1',
             'jadwal_kuliah_id' => 'required|exists:jadwal_kuliahs,id',
         ]);
-
         Kelas::create($request->all());
-
         return redirect()->route('admin.kelas.index', ['jurusan_id' => $request->jurusan_id])
             ->with('success', 'Kelas berhasil ditambahkan.');
     }
@@ -78,7 +71,6 @@ class KelasController extends Controller
         $jurusanContext = $kela->jurusan;
         $dosens = Dosen::where('isDosenWali', true)->get();
         $jadwalKuliahs = JadwalKuliah::orderBy('nama_jadwal')->get();
-
         return view('admin.kelas.edit', compact('kela', 'jurusanContext', 'dosens', 'jadwalKuliahs'));
     }
 
@@ -91,9 +83,7 @@ class KelasController extends Controller
             'semester' => 'required|integer|min:1',
             'jadwal_kuliah_id' => 'required|exists:jadwal_kuliahs,id',
         ]);
-
         $kela->update($request->all());
-
         return redirect()->route('admin.kelas.index', ['jurusan_id' => $kela->jurusan_id])
             ->with('success', 'Kelas berhasil diperbarui.');
     }
@@ -104,10 +94,8 @@ class KelasController extends Controller
             return redirect()->route('admin.kelas.index', ['jurusan_id' => $kela->jurusan_id])
                 ->with('error', 'Kelas tidak dapat dihapus karena masih memiliki mahasiswa terdaftar.');
         }
-
         $jurusanId = $kela->jurusan_id;
         $kela->delete();
-
         return redirect()->route('admin.kelas.index', ['jurusan_id' => $jurusanId])
             ->with('success', 'Kelas berhasil dihapus.');
     }

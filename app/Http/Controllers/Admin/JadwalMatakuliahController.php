@@ -19,7 +19,6 @@ class JadwalMatakuliahController extends Controller
             return redirect()->route('admin.jadwalkuliah.index')
                 ->with('error', 'Harap pilih Jadwal Kuliah terlebih dahulu.');
         }
-
         $jadwalKuliahContext = JadwalKuliah::findOrFail($jadwalKuliahId);
         $jadwalMatakuliahs = JadwalMatakuliah::where('jadwal_kuliah_id', $jadwalKuliahId)
             ->with(['matakuliah', 'dosenPengajar1', 'dosenPengajar2'])
@@ -27,7 +26,6 @@ class JadwalMatakuliahController extends Controller
             ->paginate(15);
 
         $pageTitle = "Detail Jadwal untuk: " . $jadwalKuliahContext->nama_jadwal;
-
         return view('admin.jadwalmatakuliah.index', compact('jadwalMatakuliahs', 'jadwalKuliahContext', 'pageTitle'));
     }
 
@@ -38,7 +36,6 @@ class JadwalMatakuliahController extends Controller
             return redirect()->route('admin.jadwalkuliah.index')
                 ->with('error', 'Harap pilih Jadwal Kuliah terlebih dahulu untuk menambah detail jadwal.');
         }
-
         $jadwalKuliahContext = JadwalKuliah::findOrFail($jadwalKuliahId);
         $matakuliahs = Matakuliah::orderBy('nama_matakuliah')->get();
         $dosens = Dosen::orderBy('nama')->get();
@@ -59,9 +56,7 @@ class JadwalMatakuliahController extends Controller
             'ruangan' => 'required|string|max:50',
             'semester' => 'required|integer|min:1',
         ]);
-
         JadwalMatakuliah::create($request->all());
-
         return redirect()->route('admin.jadwalmatakuliah.index', ['jadwal_kuliah_id' => $request->jadwal_kuliah_id])
             ->with('success', 'Detail jadwal mata kuliah berhasil ditambahkan.');
     }
@@ -73,7 +68,6 @@ class JadwalMatakuliahController extends Controller
         $matakuliahs = Matakuliah::orderBy('nama_matakuliah')->get();
         $dosens = Dosen::orderBy('nama')->get();
         $hariOptions = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
-
         return view('admin.jadwalmatakuliah.edit', compact('jadwalmatakuliah', 'jadwalKuliahContext', 'matakuliahs', 'dosens', 'hariOptions'));
     }
 
@@ -89,9 +83,7 @@ class JadwalMatakuliahController extends Controller
             'ruangan' => 'required|string|max:50',
             'semester' => 'required|integer|min:1',
         ]);
-
         $jadwalmatakuliah->update($request->all());
-
         return redirect()->route('admin.jadwalmatakuliah.index', ['jadwal_kuliah_id' => $jadwalmatakuliah->jadwal_kuliah_id])
             ->with('success', 'Detail jadwal mata kuliah berhasil diperbarui.');
     }
@@ -100,7 +92,6 @@ class JadwalMatakuliahController extends Controller
     {
         $jadwalKuliahId = $jadwalmatakuliah->jadwal_kuliah_id;
         $jadwalmatakuliah->delete();
-
         return redirect()->route('admin.jadwalmatakuliah.index', ['jadwal_kuliah_id' => $jadwalKuliahId])
             ->with('success', 'Detail jadwal mata kuliah berhasil dihapus.');
     }
