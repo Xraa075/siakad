@@ -41,6 +41,7 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         Route::get('dashboard', [MahasiswaDashboardController::class, 'index'])->name('dashboard');
         Route::get('/frs', [\App\Http\Controllers\Mahasiswa\FrsMahasiswaController::class, 'index'])->name('frs.index');
         Route::post('/frs/ambil/{id}', [\App\Http\Controllers\Mahasiswa\FrsMahasiswaController::class, 'ambil'])->name('frs.ambil');
+        Route::get('/jadwal', [\App\Http\Controllers\Mahasiswa\JadwalController::class, 'index'])->name('jadwal.index');
     });
 });
 
@@ -49,6 +50,8 @@ Route::prefix('dosen')->name('dosen.')->group(function () {
         Route::get('dashboard', [DosenDashboardController::class, 'index'])->name('dashboard');
         Route::get('/frs', [\App\Http\Controllers\Dosen\FrsMahasiswaController::class, 'index'])->name('frs.index');
         Route::post('/frs/{id}/acc', [\App\Http\Controllers\Dosen\FrsMahasiswaController::class, 'acc'])->name('frs.acc');
+        Route::get('/jadwal', [\App\Http\Controllers\Dosen\JadwalDosenController::class, 'index'])->name('jadwal.index');
+        Route::delete('/frs/{id}', [\App\Http\Controllers\Dosen\FrsMahasiswaController::class, 'destroy'])->name('frs.destroy');
     });
 });
 

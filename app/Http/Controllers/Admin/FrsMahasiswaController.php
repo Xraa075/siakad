@@ -52,6 +52,10 @@ class FrsMahasiswaController extends Controller
 
     public function update(Request $request, FrsMahasiswa $frs_mahasiswa)
     {
+        $request->merge([
+            'available' => $request->has('available') ? 1 : 0,
+        ]);
+
         $request->validate([
             'mahasiswa_nrp' => 'required|exists:mahasiswas,nrp',
             'matakuliah_id' => 'required|exists:matakuliahs,id',
@@ -72,6 +76,7 @@ class FrsMahasiswaController extends Controller
 
         return redirect()->route('admin.frs-mahasiswa.index')->with('success', 'FRS berhasil diperbarui.');
     }
+
 
     public function destroy(FrsMahasiswa $frs_mahasiswa)
     {

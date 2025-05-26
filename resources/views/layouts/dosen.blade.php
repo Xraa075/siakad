@@ -46,8 +46,13 @@
                     <h4>Dosen</h4>
                 </div>
                 <ul class="nav flex-column">
+                    <li><a href="/dosen/dashboard"
+                            class="{{ Request::is('dosen/dashboard') ? 'active' : '' }}">Dashboard</a></li>
                     <li><a href="/dosen/frs" class="{{ Request::is('dosen/frs*') ? 'active' : '' }}">FRS Mahasiswa</a>
                     </li>
+                    <li><a href="{{ route('dosen.jadwal.index') }}"
+                            class="{{ Request::is('dosen/jadwal*') ? 'active' : '' }}">Jadwal Saya</a></li>
+
                     <li>
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
                             @csrf

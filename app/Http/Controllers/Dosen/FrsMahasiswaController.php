@@ -20,8 +20,14 @@ class FrsMahasiswaController extends Controller
                 $query->where('dosen_nip', $nip);
             })
             ->get();
-
-        return view('dosen.frs.index', compact('frsList'));
+        $frsDisetujui = \App\Models\FrsMahasiswa::with(['mahasiswa.kelas.dosenWali', 'matakuliah'])
+            ->where('status_ambil', 'ambil')
+            ->where('status', 'acc')
+            ->whereHas('mahasiswa.kelas', function ($query) use ($nip) {
+                $query->where('dosen_nip', $nip);
+            })
+            ->get();
+        return view('dosen.frs.index', compact('frsList', 'frsDisetujui'));
     }
 
 
@@ -43,5 +49,22 @@ class FrsMahasiswaController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'FRS berhasil disetujui.');
+    }
+        public function destroy($id)
+    {
+        $nip = \App\Models\Dosen::where('user_id', Auth::id())->value('nip');
+
+        $frs = \App\Models\FrsMahasiswa::with('mahasiswa.kelas')
+            ->where('id', $id)
+            ->where('status_ambil', 'ambil')
+            ->where('status', 'belum acc')
+            ->whereHas('mahasiswa.kelas', function ($query) use ($nip) {
+                $query->where('dosen_nip', $nip);
+            })
+            ->firstOrFail();
+
+        $frs->delete();
+
+        return redirect()->back()->with('success', 'FRS berhasil dihapus.');
     }
 }

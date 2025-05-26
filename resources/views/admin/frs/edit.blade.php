@@ -5,8 +5,18 @@
 @section('content')
     <div class="container">
         <h3>Edit FRS Mahasiswa</h3>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <form action="{{ route('admin.frs-mahasiswa.update', $frs_mahasiswa->id) }}" method="POST">
+        <form action="{{ route('admin.frs-mahasiswa.update', $frs_mahasiswa->id) }}"
+            method="POST"onsubmit="console.log('form dikirim')">
             @csrf
             @method('PUT')
 
