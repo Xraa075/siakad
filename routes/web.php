@@ -28,6 +28,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('matakuliah', MatakuliahController::class);
         Route::resource('mahasiswa', MahasiswaController::class);
         Route::resource('kelas', KelasController::class);
+        Route::get('kelas/{id}/mahasiswa', [KelasController::class, 'showMahasiswa'])->name('kelas.mahasiswa');
         Route::resource('dosen', DosenController::class);
         Route::resource('jadwalkuliah', JadwalKuliahController::class);
         Route::resource('jadwalmatakuliah', JadwalMatakuliahController::class);

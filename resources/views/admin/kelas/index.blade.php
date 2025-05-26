@@ -50,6 +50,8 @@
                                 <td>{{ $item->dosenWali->nama ?? '-' }}</td>
                                 <td>{{ $item->jadwalKuliah->nama_jadwal ?? '-' }}</td>
                                 <td>
+                                    <a href="{{ route('admin.kelas.mahasiswa', $item->id) }}"
+                                        class="btn btn-info btn-sm">Lihat</a>
                                     <a href="{{ route('admin.kelas.edit', $item->id) }}"
                                         class="btn btn-warning btn-sm">Edit</a>
                                     <form action="{{ route('admin.kelas.destroy', $item->id) }}" method="POST"

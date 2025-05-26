@@ -59,10 +59,11 @@ class KelasController extends Controller
             ->with('success', 'Kelas berhasil ditambahkan.');
     }
 
-    public function show(Kelas $kela)
+    public function showMahasiswa($id)
     {
-        $kela->load(['jurusan.departemen', 'dosenWali', 'jadwalKuliah', 'mahasiswas']);
-        return view('admin.kelas.show', compact('kela'));
+        $kelas = Kelas::with('mahasiswas')->findOrFail($id);
+        $mahasiswas = $kelas->mahasiswas;
+        return view('admin.kelas.mahasiswa', compact('kelas', 'mahasiswas'));
     }
 
     public function edit(Kelas $kela)
