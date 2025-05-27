@@ -68,13 +68,13 @@ class JadwalMatakuliahController extends Controller
         JadwalMatakuliah::create([
             'jadwal_kuliah_id' => $request->jadwal_kuliah_id,
             'matakuliah_id' => $matakuliah->id,
-            'dosen_nip' => $matakuliah->dosen_nip, // otomatis dari relasi
+            'dosen_nip' => $matakuliah->dosen_nip,
             'dosen_pengajar2_nip' => $request->dosen_pengajar2_nip,
             'hari' => $request->hari,
             'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
             'ruangan' => $request->ruangan,
-            'semester' => $matakuliah->semester, // otomatis dari relasi
+            'semester' => $matakuliah->semester,
         ]);
 
         return redirect()->route('admin.jadwalmatakuliah.index', ['jadwal_kuliah_id' => $request->jadwal_kuliah_id])

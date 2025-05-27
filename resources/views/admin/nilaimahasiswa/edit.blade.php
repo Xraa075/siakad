@@ -16,12 +16,14 @@
                     @include('admin.nilaimahasiswa.partials.form', [
                         'submitButtonText' => 'Update Nilai',
                         'nilaimahasiswa' => $nilaimahasiswa,
-                        'mahasiswas' => $mahasiswas,
-                        'matakuliahs' => $matakuliahs,
-                        'dosens' => $dosens,
+                        'selectedMahasiswa' => $selectedMahasiswa,
+                        'matakuliahOptions' => $matakuliahOptions,
                     ])
                 </form>
             </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+@endpush

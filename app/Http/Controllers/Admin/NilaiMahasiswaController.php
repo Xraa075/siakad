@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\NilaiMahasiswa;
 use App\Models\Mahasiswa;
 use App\Models\Matakuliah;
+use App\Models\JadwalMatakuliah;
 use App\Models\Dosen;
 use Illuminate\Http\Request;
 
@@ -51,12 +52,41 @@ class NilaiMahasiswaController extends Controller
         return view('admin.nilaimahasiswa.index', compact('nilais', 'mahasiswas', 'matakuliahs'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $mahasiswas = Mahasiswa::orderBy('nama')->get();
-        $matakuliahs = Matakuliah::orderBy('nama_matakuliah')->get();
-        $dosens = Dosen::orderBy('nama')->get();
-        return view('admin.nilaimahasiswa.create', compact('mahasiswas', 'matakuliahs', 'dosens'));
+        $selectedMahasiswa = null;
+        $matakuliahOptions = collect();
+        if ($request->filled('mahasiswa_nrp_selected')) {
+            $selectedMahasiswa = Mahasiswa::with([
+                'kelas.jadwalKuliah.jadwalMatakuliahs.matakuliah.dosenPJMK',
+                'kelas.jurusan'
+            ])->find($request->mahasiswa_nrp_selected);
+
+            if ($selectedMahasiswa && $selectedMahasiswa->kelas && $selectedMahasiswa->kelas->jadwalKuliah) {
+                $jadwalKuliahId = $selectedMahasiswa->kelas->jadwal_kuliah_id;
+                $matakuliahDiJadwal = JadwalMatakuliah::where('jadwal_kuliah_id', $jadwalKuliahId)
+                    ->where('semester', '<=', $selectedMahasiswa->semester)
+                    ->with('matakuliah.dosenPJMK')
+                    ->get()
+                    ->pluck('matakuliah')
+                    ->filter()
+                    ->unique('id');
+
+                foreach ($matakuliahDiJadwal as $mk) {
+                    $sudahAdaNilai = NilaiMahasiswa::where('mahasiswa_nrp', $selectedMahasiswa->nrp)
+                        ->where('matakuliah_id', $mk->id)
+                        ->where('semester', $selectedMahasiswa->semester)
+                        ->exists();
+                    if (!$sudahAdaNilai) {
+                        $matakuliahOptions->push($mk);
+                    }
+                }
+                $matakuliahOptions = $matakuliahOptions->sortBy('nama_matakuliah');
+            }
+        }
+
+        return view('admin.nilaimahasiswa.create', compact('mahasiswas', 'selectedMahasiswa', 'matakuliahOptions'));
     }
 
     public function store(Request $request)
@@ -64,8 +94,6 @@ class NilaiMahasiswaController extends Controller
         $request->validate([
             'mahasiswa_nrp' => 'required|exists:mahasiswas,nrp',
             'matakuliah_id' => 'required|exists:matakuliahs,id',
-            'dosen_nip' => 'required|exists:dosens,nip',
-            'semester' => 'required|integer|min:1',
             'nilai_uts' => 'required|numeric|min:0|max:100',
             'nilai_uas' => 'required|numeric|min:0|max:100',
             'nilai_tugas' => 'required|numeric|min:0|max:100',
@@ -74,6 +102,25 @@ class NilaiMahasiswaController extends Controller
             'matakuliah_id.required' => 'Mata kuliah harus dipilih.',
         ]);
 
+        $mahasiswa = Mahasiswa::findOrFail($request->mahasiswa_nrp);
+        $matakuliah = Matakuliah::with('dosenPJMK')->findOrFail($request->matakuliah_id);
+
+        if (!$matakuliah->dosenPJMK) {
+            return back()->withInput()->with('error', 'Mata kuliah (' . $matakuliah->nama_matakuliah . ') tidak memiliki Dosen Penanggung Jawab (PJMK). Harap perbarui data mata kuliah.');
+        }
+
+        $semesterUntukNilai = $mahasiswa->semester;
+        $dosenUntukNilaiNip = $matakuliah->dosen_nip;
+
+        $existingNilai = NilaiMahasiswa::where('mahasiswa_nrp', $mahasiswa->nrp)
+            ->where('matakuliah_id', $matakuliah->id)
+            ->where('semester', $semesterUntukNilai)
+            ->first();
+
+        if ($existingNilai) {
+            return back()->withInput()->with('error', 'Nilai untuk mahasiswa, mata kuliah, dan semester ini sudah ada. Silakan edit data yang ada.');
+        }
+
         $nilai_akhir = $this->hitungNilaiAkhir(
             $request->nilai_uts,
             $request->nilai_uas,
@@ -81,28 +128,33 @@ class NilaiMahasiswaController extends Controller
         );
         $grade = $this->hitungGrade($nilai_akhir);
 
-        NilaiMahasiswa::create(array_merge(
-            $request->only(['mahasiswa_nrp', 'matakuliah_id', 'dosen_nip', 'semester', 'nilai_uts', 'nilai_uas', 'nilai_tugas']),
-            ['nilai_akhir' => $nilai_akhir, 'grade' => $grade]
-        ));
+        NilaiMahasiswa::create([
+            'mahasiswa_nrp' => $mahasiswa->nrp,
+            'matakuliah_id' => $matakuliah->id,
+            'dosen_nip' => $dosenUntukNilaiNip,
+            'semester' => $semesterUntukNilai,
+            'nilai_uts' => $request->nilai_uts,
+            'nilai_uas' => $request->nilai_uas,
+            'nilai_tugas' => $request->nilai_tugas,
+            'nilai_akhir' => $nilai_akhir,
+            'grade' => $grade,
+        ]);
+
         return redirect()->route('admin.nilaimahasiswa.index')->with('success', 'Nilai mahasiswa berhasil ditambahkan.');
     }
 
     public function edit(NilaiMahasiswa $nilaimahasiswa)
     {
-        $mahasiswas = Mahasiswa::orderBy('nama')->get();
-        $matakuliahs = Matakuliah::orderBy('nama_matakuliah')->get();
-        $dosens = Dosen::orderBy('nama')->get();
-        return view('admin.nilaimahasiswa.edit', compact('nilaimahasiswa', 'mahasiswas', 'matakuliahs', 'dosens'));
+        $nilaimahasiswa->load(['mahasiswa', 'matakuliah.dosenPJMK', 'dosen']);
+        $selectedMahasiswa = $nilaimahasiswa->mahasiswa;
+        $matakuliahOptions = collect([$nilaimahasiswa->matakuliah]);
+
+        return view('admin.nilaimahasiswa.edit', compact('nilaimahasiswa', 'selectedMahasiswa', 'matakuliahOptions'));
     }
 
     public function update(Request $request, NilaiMahasiswa $nilaimahasiswa)
     {
         $request->validate([
-            'mahasiswa_nrp' => 'required|exists:mahasiswas,nrp',
-            'matakuliah_id' => 'required|exists:matakuliahs,id',
-            'dosen_nip' => 'required|exists:dosens,nip',
-            'semester' => 'required|integer|min:1',
             'nilai_uts' => 'required|numeric|min:0|max:100',
             'nilai_uas' => 'required|numeric|min:0|max:100',
             'nilai_tugas' => 'required|numeric|min:0|max:100',
@@ -115,10 +167,13 @@ class NilaiMahasiswaController extends Controller
         );
         $grade = $this->hitungGrade($nilai_akhir);
 
-        $nilaimahasiswa->update(array_merge(
-            $request->only(['mahasiswa_nrp', 'matakuliah_id', 'dosen_nip', 'semester', 'nilai_uts', 'nilai_uas', 'nilai_tugas']),
-            ['nilai_akhir' => $nilai_akhir, 'grade' => $grade]
-        ));
+        $nilaimahasiswa->update([
+            'nilai_uts' => $request->nilai_uts,
+            'nilai_uas' => $request->nilai_uas,
+            'nilai_tugas' => $request->nilai_tugas,
+            'nilai_akhir' => $nilai_akhir,
+            'grade' => $grade,
+        ]);
 
         return redirect()->route('admin.nilaimahasiswa.index')->with('success', 'Nilai mahasiswa berhasil diperbarui.');
     }
