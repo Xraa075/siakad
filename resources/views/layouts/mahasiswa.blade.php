@@ -50,14 +50,18 @@
                             class="{{ Request::is('mahasiswa/dashboard') ? 'active' : '' }}">Dashboard</a></li>
                     <li><a href="/mahasiswa/frs" class="{{ Request::is('mahasiswa/frs*') ? 'active' : '' }}">FRS
                             Saya</a></li>
-                    <li>
+
                     <li> <a href="/mahasiswa/jadwal"
                             class="{{ Request::is('mahasiswa/jadwal*') ? 'active' : '' }}">Jadwal Mata Kuliah</a>
                     </li>
-                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                        @csrf
-                        <button type="submit" class="btn btn-link text-white ps-3">Logout</button>
-                    </form>
+                    <li><a href="/mahasiswa/nilai"
+                            class="{{ Request::is('mahasiswa/nilai*') ? 'active' : '' }}">Transkrip Nilai</a>
+                    </li>
+                    <li>
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-link text-white ps-3">Logout</button>
+                        </form>
                     </li>
                 </ul>
             </nav>

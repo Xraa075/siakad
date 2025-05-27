@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\DosenController;
 use App\Http\Controllers\Admin\JadwalKuliahController;
 use App\Http\Controllers\Admin\JadwalMatakuliahController;
 use App\Http\Controllers\Admin\NilaiMahasiswaController;
+use App\Http\Controllers\Mahasiswa\NilaiController as MahasiswaNilaiController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware([Authenticate::class, AdminMiddleware::class])->group(function () {
@@ -43,6 +44,7 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->group(function () {
         Route::get('/frs', [\App\Http\Controllers\Mahasiswa\FrsMahasiswaController::class, 'index'])->name('frs.index');
         Route::post('/frs/ambil/{id}', [\App\Http\Controllers\Mahasiswa\FrsMahasiswaController::class, 'ambil'])->name('frs.ambil');
         Route::get('/jadwal', [\App\Http\Controllers\Mahasiswa\JadwalController::class, 'index'])->name('jadwal.index');
+        Route::get('nilai', [MahasiswaNilaiController::class, 'index'])->name('nilai.index');
     });
 });
 
