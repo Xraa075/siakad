@@ -13,7 +13,8 @@
                 class="form-select @error('matakuliah_id') is-invalid @enderror" required>
                 <option value="">-- Pilih Mata Kuliah --</option>
                 @foreach ($matakuliahs as $mk)
-                    <option value="{{ $mk->id }}"
+                    <option value="{{ $mk->id }}" data-semester="{{ $mk->semester }}"
+                        data-dosen-nip="{{ $mk->dosen_nip }}"
                         {{ old('matakuliah_id', $jadwalmatakuliah->matakuliah_id ?? '') == $mk->id ? 'selected' : '' }}>
                         {{ $mk->nama_matakuliah }} (Semester {{ $mk->semester }})
                     </option>
@@ -24,39 +25,29 @@
             @enderror
         </div>
     </div>
+
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="semester" class="form-label">Semester Pelaksanaan <span class="text-danger">*</span></label>
-            <input type="number" name="semester" id="semester"
-                class="form-control @error('semester') is-invalid @enderror"
-                value="{{ old('semester', $jadwalmatakuliah->semester ?? '') }}" required min="1">
-            @error('semester')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+            <label class="form-label">Semester Pelaksanaan</label>
+            <input type="number" id="semester" class="form-control"
+                value="{{ old('semester', $jadwalmatakuliah->semester ?? '') }}" readonly disabled>
+            <input type="hidden" name="semester" id="semester_hidden"
+                value="{{ old('semester', $jadwalmatakuliah->semester ?? '') }}">
         </div>
     </div>
 </div>
 
-
 <div class="row">
     <div class="col-md-6">
         <div class="mb-3">
-            <label for="dosen_nip" class="form-label">Dosen Pengajar 1 <span class="text-danger">*</span></label>
-            <select name="dosen_nip" id="dosen_nip" class="form-select @error('dosen_nip') is-invalid @enderror"
-                required>
-                <option value="">-- Pilih Dosen --</option>
-                @foreach ($dosens as $dosen)
-                    <option value="{{ $dosen->nip }}"
-                        {{ old('dosen_nip', $jadwalmatakuliah->dosen_nip ?? '') == $dosen->nip ? 'selected' : '' }}>
-                        {{ $dosen->nama }}
-                    </option>
-                @endforeach
-            </select>
-            @error('dosen_nip')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
+            <label class="form-label">Dosen Pengajar 1 (Otomatis dari Mata Kuliah)</label>
+            <input type="text" id="dosen_nama" class="form-control"
+                value="{{ $jadwalmatakuliah->matakuliah->dosen->nama ?? '-' }}" readonly>
+            <input type="hidden" name="dosen_nip" id="dosen_nip"
+                value="{{ old('dosen_nip', $jadwalmatakuliah->matakuliah->dosen_nip ?? '') }}">
         </div>
     </div>
+
     <div class="col-md-6">
         <div class="mb-3">
             <label for="dosen_pengajar2_nip" class="form-label">Dosen Pengajar 2 (Opsional)</label>
@@ -94,6 +85,7 @@
             @enderror
         </div>
     </div>
+
     <div class="col-md-3">
         <div class="mb-3">
             <label for="jam_mulai" class="form-label">Jam Mulai <span class="text-danger">*</span></label>
@@ -105,6 +97,7 @@
             @enderror
         </div>
     </div>
+
     <div class="col-md-3">
         <div class="mb-3">
             <label for="jam_selesai" class="form-label">Jam Selesai <span class="text-danger">*</span></label>
@@ -116,6 +109,7 @@
             @enderror
         </div>
     </div>
+
     <div class="col-md-3">
         <div class="mb-3">
             <label for="ruangan" class="form-label">Ruangan <span class="text-danger">*</span></label>
@@ -133,3 +127,36 @@
     class="btn btn-primary">{{ $submitButtonText ?? (isset($jadwalmatakuliah) ? 'Update Detail Jadwal' : 'Simpan Detail Jadwal') }}</button>
 <a href="{{ route('admin.jadwalmatakuliah.index', ['jadwal_kuliah_id' => $jadwalKuliahContext->id]) }}"
     class="btn btn-secondary">Kembali</a>
+
+{{-- JavaScript untuk auto-set semester dan dosen_nip --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectMataKuliah = document.getElementById('matakuliah_id');
+        const semesterInput = document.getElementById('semester');
+        const semesterHidden = document.getElementById('semester_hidden');
+        const dosenNipInput = document.getElementById('dosen_nip');
+        const dosenNamaInput = document.getElementById('dosen_nama');
+
+        const matakuliahMap = @json($matakuliahs->keyBy('id'));
+
+        function updateFromMataKuliah(id) {
+            const selected = matakuliahMap[id];
+            if (selected) {
+                semesterInput.value = selected.semester;
+                semesterHidden.value = selected.semester;
+                dosenNipInput.value = selected.dosen_nip;
+
+                const dosen = @json($dosens->keyBy('nip'));
+                dosenNamaInput.value = dosen[selected.dosen_nip]?.nama || '-';
+            }
+        }
+
+        selectMataKuliah.addEventListener('change', function() {
+            updateFromMataKuliah(this.value);
+        });
+
+        if (selectMataKuliah.value) {
+            updateFromMataKuliah(selectMataKuliah.value);
+        }
+    });
+</script>
